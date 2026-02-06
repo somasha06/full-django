@@ -118,16 +118,18 @@ def place_order(request):
 
 
     else:
-        address = Address.objects.create(
-            user=request.user,
-            name=request.POST.get("fullname"),
-            phone=request.POST.get("phone"),
-            street=request.POST.get("address"),
-            city=request.POST.get("city"),
-            pin_code=request.POST.get("pincode"),
-            state=request.POST.get("state", ""),
-            country="India"
-        )
+       address, created = Address.objects.get_or_create(
+    user=request.user,
+    street=request.POST.get("address"),
+    city=request.POST.get("city"),
+    pin_code=request.POST.get("pincode"),
+    defaults={
+        "name": request.POST.get("fullname"),
+        "phone": request.POST.get("phone"),
+        "state": request.POST.get("state", ""),
+        "country": "India"
+    }
+)
 
     total = sum(item.total_price for item in items)
 

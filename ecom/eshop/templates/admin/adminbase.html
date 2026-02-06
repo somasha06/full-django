@@ -28,8 +28,8 @@
             </div>
             <div class="flex gap-5">
                 <a href=""><i class="fa-solid fa-user cursor-pointer hover:text-orange-700 text-xl border rounded-[50%] border-black p-1 bg-green-200"></i></a>
-                <a href=""><i class="fa-regular fa-heart cursor-pointer hover:text-orange-700 text-xl border rounded-[50%] border-black p-1 bg-green-200"></i></a>
-                <a href=""><i class="fa-solid fa-cart-shopping cursor-pointer hover:text-orange-700 text-xl border rounded-[50%] border-black p-1 bg-green-200"></i></a>
+                {% comment %} <a href=""><i class="fa-regular fa-heart cursor-pointer hover:text-orange-700 text-xl border rounded-[50%] border-black p-1 bg-green-200"></i></a>
+                <a href=""><i class="fa-solid fa-cart-shopping cursor-pointer hover:text-orange-700 text-xl border rounded-[50%] border-black p-1 bg-green-200"></i></a> {% endcomment %}
                 {% if user.is_authenticated %}
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
@@ -52,10 +52,10 @@
                 <a href="{% url 'manageproduct' %}" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-brands fa-artstation"></i>Manage Product</a>
                 <a href="{% url 'manageproductvariant' %}" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-brands fa-artstation"></i>Manage Product Variant</a>
                 <a href="{% url 'storeprofile' %}" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-brands fa-artstation"></i>Store Profile</a>
-                <a href="" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-solid fa-cart-arrow-down"></i>Manage Order</a>
-                <a href="" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-solid fa-dollar-sign"></i>Manage Payments</a>
-                <a href="" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-solid fa-circle-user"></i>Manage users</a>
-                <a href="" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-solid fa-power-off"></i>Logout</a>
+                <a href="{% url 'totalorders'   %}" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-solid fa-cart-arrow-down"></i>Manage Order</a>
+                {% comment %} <a href="" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-solid fa-dollar-sign"></i>Manage Payments</a> {% endcomment %}
+                <a href="{% url 'allcustomer' %}" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-solid fa-circle-user"></i>Manage users</a>
+                <a href="{% url 'logout' %}" class="bg-green-300 text-black px-3 py-2 hover:bg-green-600 flex items-center gap-3"><i class="fa-solid fa-power-off"></i>Logout</a>
             </div>
         </div>
         <div class="w-9/12">

@@ -64,6 +64,9 @@ class Address(models.Model):
     address_type=models.CharField(max_length=10,choices=ADDRESS_CHOICES,default="home")
     is_default = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = ("user","street","city","phone","pin_code")
+
     def __str__(self):
         return f"{self.user.username}-name"
 
@@ -144,7 +147,7 @@ class ProductVariant(models.Model):
     
 
     def __str__(self):
-        return f"{self.product.name} - {self.weight}"
+        return self.weight
     
 class Wishlist(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,related_name="wishlist")

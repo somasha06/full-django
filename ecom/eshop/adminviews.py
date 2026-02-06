@@ -8,7 +8,10 @@ from django.db.models import Count, Sum, Max
 
 
 def admindashboard(request):
-    return render(request,"admin/admindashboard.html")
+    totalorders=Order.objects.count()
+    totalproducts=Product.objects.count()
+    totaluser=Role.objects.filter(role=Role.CUSTOMER).count()
+    return render(request,"admin/admindashboard.html",{"totalorders":totalorders,"totalproducts":totalproducts,"totaluser":totaluser})
 
 def managecategory(request):
     form=Categoryform(request.POST or None ,request.FILES or None)
