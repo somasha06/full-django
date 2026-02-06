@@ -1,0 +1,31 @@
+{% extends "customer/customerbase.html" %}
+{% block content %}
+
+<div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
+    <h2 class="text-xl font-bold mb-4">
+        Review {{ item.product_variant.product.name }}
+    </h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label class="block mb-2">Rating</label>
+        <select name="rating" required class="border w-full p-2 mb-4">
+            {% for i in "12345" %}
+            <option value="{{ i }}"
+                {% if review and review.rating|stringformat:"s" == i %}selected{% endif %}>
+                {{ i }} Star
+            </option>
+            {% endfor %}
+        </select>
+
+        <label class="block mb-2">Comment</label>
+        <textarea name="comment" class="border w-full p-2 mb-4">{{ review.comment }}</textarea>
+
+        <button class="bg-orange-600 text-white px-6 py-2 rounded">
+            Submit Review
+        </button>
+    </form>
+</div>
+
+{% endblock %}

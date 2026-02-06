@@ -1,0 +1,31 @@
+{% extends "customer/customerbase.html" %}
+{% block content %}
+
+<div class="max-w-xl mx-auto mt-10 bg-orange-100 p-6 rounded">
+    <h2 class="text-xl font-bold mb-4">Edit Address</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <input name="fullname" value="{{ address.fullname }}"
+               class="w-full mb-3 p-2 rounded">
+
+        <input name="phone" value="{{ address.phone }}"
+               class="w-full mb-3 p-2 rounded">
+
+        <textarea name="address"
+                  class="w-full mb-3 p-2 rounded">{{ address.address }}</textarea>
+
+        <input name="city" value="{{ address.city }}"
+               class="w-full mb-3 p-2 rounded">
+
+        <input name="pincode" value="{{ address.pincode }}"
+               class="w-full mb-3 p-2 rounded">
+
+        <button class="w-full bg-green-600 text-white py-2 rounded">
+            Update Address
+        </button>
+    </form>
+</div>
+
+{% endblock %}

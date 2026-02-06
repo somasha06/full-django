@@ -1,0 +1,66 @@
+{% extends "customer/customerbase.html" %}
+
+{% block content %}
+
+
+
+
+<section class="mt-8">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6">
+    {% for product in products %}
+      <a href="{% url 'viewproduct' product.id %}" class="block">
+    <div class="bg-orange-200 rounded-lg overflow-hidden hover:shadow-lg">
+
+    <!-- IMAGE CONTAINER (THIS IS THE KEY FIX) -->
+    {% with product.images.first as img %}
+    {% if img %}
+        <img src="{{ img.productimages.url }}"
+             class="max-w-full max-h-full object-cover">
+    {% else %}
+        <div class="text-gray-500">No Image</div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- TEXT -->
+    <div class="p-2 text-center">
+      <h2 class="font-bold truncate">{{ product.name }}</h2>
+      <h2 class="text-sm">Brand: Mom's Crunch</h2>
+
+    {% with product.productvariants.first as variant %}
+    {% if variant %}
+        <h2 class="font-bold">
+        Price:
+        {% if variant.discount_price %}
+            ₹{{ variant.discount_price }}
+            <del class="text-black/40">₹{{ variant.price }}</del>
+        
+        {% else %}
+            ₹{{ variant.price }}
+        {% endif %}
+        </h2>
+    {% else %}
+        <h2 class="text-gray-500">Price not available</h2>
+    {% endif %}
+    {% endwith %}    
+    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-semibold">
+        <i class="fa-solid fa-heart"></i>Made with love by {{ profile.owner_name }}   
+    </span>   
+    
+    <p class="mt-2 font-semibold">
+    ⭐⭐⭐⭐⭐ {{ product.average_rating }} / 5
+    <span class="text-gray-500">
+        ({{ product.total_reviews }} reviews)
+    </span>
+</p>
+
+    </div>
+
+    </div>
+    </a>
+
+    {% endfor %}
+  </div>
+</section>
+
+
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "customer/customerbase.html" %}
+{% block content %}
+
+<div class="px-[10%] mt-10">
+    <h1 class="text-2xl font-bold mb-6">Your Cart</h1>
+
+    {% if items %}
+        {% for item in items %}
+            <div class="flex justify-between items-center bg-orange-100 p-4 rounded-lg mb-4">
+
+                <!-- LEFT -->
+                <div class="flex items-center gap-4">
+
+                    {% with item.product_variant.product.images.first as img %}
+                        {% if img %}
+                            <img src="{{ img.productimages.url }}"
+                                 class="w-20 h-20 object-contain rounded">
+                        {% else %}
+                            <div class="w-20 h-20 bg-gray-200 flex items-center justify-center rounded">
+                                No Image
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+
+                    <div>
+                        <h2 class="font-bold">
+                            {{ item.product_variant.product.name }}
+                        </h2>
+
+                        <p class="text-sm text-gray-600">
+                            Variant: {{ item.product_variant.weight }}
+                        </p>
+
+                        <!-- QUANTITY CONTROLS -->
+                        <div class="flex items-center gap-2 mt-2">
+                            <a href="{% url 'decreaseqty' item.id %}"
+                               class="px-2 py-1 bg-red-500 text-white rounded">−</a>
+
+                            <span class="px-3 font-bold">{{ item.quantity }}</span>
+
+                            <a href="{% url 'increaseqty' item.id %}"
+                               class="px-2 py-1 bg-green-500 text-white rounded">+</a>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- RIGHT -->
+                <p class="font-bold">
+                    ₹ {{ item.total_price }}
+                </p>
+
+            </div>
+        {% endfor %}
+
+        <div class="text-right mt-6">
+            <h2 class="text-xl font-bold">Total: ₹ {{ total }}</h2>
+        </div>
+
+        
+
+        <div class="text-right mt-6">
+            <a href="{% url 'checkout' %}" class="text-xl font-bold text-orange-600">Checkout</a>
+        </div>
+
+    {% else %}
+        <p class="text-center text-gray-500">Your cart is empty.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "customer/customerbase.html" %}
+{% block content %}
+
+<div class="px-[10%] mt-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+
+    <!-- LEFT: ADDRESS FORM -->
+    <form method="post" action="{% url 'place_order' %}" class="bg-orange-100 p-6 rounded">
+        {% csrf_token %}
+        <h2 class="text-xl font-bold mb-4">Delivery Address</h2>
+
+        <input id="fullname" name="fullname" required placeholder="Full Name"
+               class="w-full mb-3 p-2 rounded">
+
+        <input id="phone" name="phone" required placeholder="Phone"
+               class="w-full mb-3 p-2 rounded">
+
+        <textarea id="street" name="address" required placeholder="Street Address"
+                  class="w-full mb-3 p-2 rounded"></textarea>
+
+        <input id="city" name="city" required placeholder="City"
+               class="w-full mb-3 p-2 rounded">
+
+        <input id="pincode" name="pincode" required placeholder="Pincode"
+               class="w-full mb-3 p-2 rounded">
+
+        <input id="state" name="state" placeholder="State"
+               class="w-full mb-3 p-2 rounded">
+
+        <label class="flex items-center gap-2 mb-3">
+            <input type="checkbox" name="save_address" value="yes">
+            Save this address for future
+        </label>
+
+        <button class="w-full bg-green-600 text-white py-2 rounded">
+            Continue to Payment
+        </button>
+    </form>
+
+    <!-- RIGHT: ORDER SUMMARY -->
+    <div class="bg-orange-50 p-6 rounded">
+        <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+
+        {% for item in items %}
+            <div class="flex justify-between mb-2">
+                <span>{{ item.product_variant.product.name }} × {{ item.quantity }}</span>
+                <span>₹{{ item.total_price }}</span>
+            </div>
+        {% endfor %}
+
+        <hr class="my-4">
+        <h3 class="font-bold text-lg">Total: ₹{{ total }}</h3>
+    </div>
+
+</div>
+
+<!-- SAVED ADDRESSES -->
+<div class="px-[10%] mt-10 bg-orange-50 p-6 rounded">
+    <h2 class="text-xl font-bold mb-4">Saved Addresses</h2>
+
+    {% for addr in addresses %}
+        <div
+            onclick="fillAddress(
+                '{{ addr.name|escapejs }}',
+                '{{ addr.phone|escapejs }}',
+                '{{ addr.street|escapejs }}',
+                '{{ addr.city|escapejs }}',
+                '{{ addr.pin_code|escapejs }}',
+                '{{ addr.state|escapejs }}'
+            )"
+            class="border p-4 mb-3 rounded cursor-pointer hover:bg-orange-100"
+        >
+            <strong>{{ addr.name }}</strong><br>
+            {{ addr.street }}<br>
+            {{ addr.city }} - {{ addr.pin_code }}<br>
+            📞 {{ addr.phone }}
+
+            <div class="flex gap-3 mt-3">
+                <a href="{% url 'editaddress' addr.id %}"
+                   class="text-sm px-3 py-1 bg-blue-500 text-white rounded">
+                   Edit
+                </a>
+
+                <a href="{% url 'deleteaddress' addr.id %}"
+                   {% comment %} onclick="return confirm('Delete this address?')" {% endcomment %}
+                   class="text-sm px-3 py-1 bg-red-500 text-white rounded">
+                   Delete
+                </a>
+            </div>  
+        </div>
+    {% empty %}
+        <p class="text-gray-500">No saved addresses</p>
+    {% endfor %}
+</div>
+
+<!-- JS -->
+<script>
+function fillAddress(name, phone, street, city, pincode, state) {
+    document.getElementById("fullname").value = name;
+    document.getElementById("phone").value = phone;
+    document.getElementById("street").value = street;
+    document.getElementById("city").value = city;
+    document.getElementById("pincode").value = pincode;
+    document.getElementById("state").value = state;
+}
+</script>
+
+{% endblock %}
+
+
+

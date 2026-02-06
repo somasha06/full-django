@@ -1,0 +1,63 @@
+{% extends "customer/customerbase.html" %}
+{% block content %}
+
+<div class="px-[10%] mt-10 grid grid-cols-1 md:grid-cols-4 gap-8">
+
+    <!-- SIDEBAR -->
+    <div class="bg-orange-50 p-4 rounded">
+        <h2 class="font-bold mb-3">My Account</h2>
+        <ul class="space-y-2">
+            <li><a href="{% url 'profile' %}" class="font-semibold">Dashboard</a></li>
+            <li><a href="{% url 'my_orders' %}">My Orders</a></li>
+            
+            <li><a href="{% url 'logout' %}" class="text-red-600">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="md:col-span-3">
+
+        <h2 class="text-2xl font-bold mb-4">
+            Hello, {{ request.user.username }} 👋
+        </h2>
+
+        <!-- RECENT ORDERS -->
+        <div class="bg-white p-6 rounded mb-6">
+            <h3 class="font-bold mb-3">Recent Orders</h3>
+
+            {% for order in orders %}
+                <div class="border-b py-3 flex justify-between">
+                    <div>
+                        <p>Order #{{ order.id }}</p>
+                        <p class="text-sm text-gray-500">{{ order.created_at }}</p>
+                    </div>
+                    <div>
+                        ₹{{ order.final_price }} 
+                        {% comment %} <a href="" class="text-blue-600">
+                            View
+                        </a> {% endcomment %}
+                    </div>
+                </div>
+            {% empty %}
+                <p>No orders yet</p>
+            {% endfor %}
+        </div>
+
+        <!-- ADDRESSES -->
+        <div class="bg-white p-6 rounded">
+            <h3 class="font-bold mb-3">Saved Addresses</h3>
+            {% for addr in addresses %}
+                <div class="border p-3 mb-2 rounded">
+                    <strong>{{ addr.name }}</strong><br>
+                    {{ addr.street }}, {{ addr.city }} - {{ addr.pin_code }}<br>
+                    📞 {{ addr.phone }}
+                </div>
+            {% empty %}
+                <p>No saved addresses</p>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

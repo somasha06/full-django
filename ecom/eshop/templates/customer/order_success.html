@@ -1,0 +1,118 @@
+{% extends "customer/customerbase.html" %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto py-12 text-center">
+
+    <!-- Title -->
+    <h1 class="text-3xl font-bold text-green-600">
+        Order Placed Successfully 🎉
+    </h1>
+
+    <p class="mt-2 text-gray-600">
+        Thank you for shopping with <strong>Mom's Crunch</strong>
+    </p>
+
+    <!-- Order Summary -->
+    <div class="mt-8 bg-white shadow rounded-lg p-6 text-left">
+
+        <!-- Order Info -->
+        <div class="flex justify-between mb-4">
+            <p>
+                <strong>Order ID:</strong> #{{ order.id }}
+            </p>
+            <p>
+                <strong>Order Date:</strong>
+                {{ order.created_at|date:"d M Y" }}
+            </p>
+        </div>
+
+        <!-- Payment Info -->
+        <div class="flex justify-between mb-4">
+            <p>
+                <strong>Payment Method:</strong>
+                {{ order.payment_method }}
+            </p>
+
+            {% if order.status == "paid" %}
+                <p class="text-green-600 font-semibold">
+                    Payment Status: Paid
+                </p>
+            {% else %}
+                <p class="text-orange-600 font-semibold">
+                    Payment Status: Unpaid
+                </p>
+            {% endif %}
+        </div>
+
+        <hr class="my-4">
+
+        <!-- Items -->
+        <h3 class="font-semibold mb-3">Items Ordered</h3>
+
+        <table class="w-full text-sm">
+            <thead class="border-b">
+                <tr>
+                    <th class="text-left">Product</th>
+                    <th class="text-center">Variant</th>
+                    <th class="text-center">Qty</th>
+                    <th class="text-right">Price</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for item in order_items %}
+                <tr class="border-b">
+                    <td>
+                        {{ item.product_variant.product.name }}
+                    </td>
+                    <td class="text-center">
+                        {{ item.product_variant }}
+                    </td>
+                    <td class="text-center">
+                        {{ item.quantity }}
+                    </td>
+                    <td class="text-right">
+                        ₹{{ item.price }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Total -->
+        <div class="flex justify-between mt-4 text-lg font-semibold">
+            <span>Total Amount</span>
+            <span>₹{{ order.final_price }}</span>
+        </div>
+
+        <hr class="my-4">
+
+        <!-- Address -->
+        <h3 class="font-semibold mb-2">Delivery Address</h3>
+        <p class="text-gray-700 leading-relaxed">
+            {{ order.address.name }} <br>
+            {{ order.address.street }} <br>
+            {{ order.address.city }},
+            {{ order.address.state }} <br>
+            {{ order.address.pin_code }} <br>
+            {{ order.address.country }} <br>
+            📞 {{ order.address.phone }}
+        </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-8 flex justify-center gap-4">
+        <a href="{% url 'customerpage' %}"
+           class="bg-orange-500 text-white px-6 py-2 rounded">
+            Continue Shopping
+        </a>
+
+        <a href="#"
+           class="border px-6 py-2 rounded">
+            Track Order
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

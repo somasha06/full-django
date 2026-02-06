@@ -1,0 +1,99 @@
+{% extends "customer/customerbase.html" %}
+{% block content %}
+
+<div class="max-w-lg mx-auto mt-20 bg-white p-6 rounded shadow">
+    <div class="mb-6 border rounded p-4 bg-gray-50">
+        <h3 class="font-bold mb-2">Deliver to</h3>
+        <p class="font-semibold">{{ order.address.name }}</p>
+        <p>{{ order.address.street }}</p>
+        <p>{{ order.address.city }} - {{ order.address.pin_code }}</p>
+        <p>{{ order.address.state }}, {{ order.address.country }}</p>
+        <p>📞 {{ order.address.phone }}</p>
+    </div>
+
+    <h2 class="text-xl font-bold mb-4">Pay ₹{{ order.final_price }}</h2>
+
+    <h3 class="font-bold mb-2">Payment Method</h3>
+
+    <label class="flex items-center gap-2 mb-2">
+        <input type="radio" name="payment_method" value="ONLINE" checked>
+        Online Payment (UPI / Card)
+    </label>
+
+    <label class="flex items-center gap-2 mb-4">
+        <input type="radio" name="payment_method" value="COD">
+        Cash on Delivery (COD)
+    </label>
+
+    <button id="pay-btn" type="button"
+        class="w-full bg-orange-600 text-white py-3 rounded">
+        Proceed to Pay
+    </button>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+const payBtn = document.getElementById("pay-btn");
+
+payBtn.onclick = function () {
+    const method = document.querySelector(
+        'input[name="payment_method"]:checked'
+    ).value;
+
+    // ✅ COD FLOW
+    if (method === "COD") {
+        fetch("{% url 'cod_order' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify({
+                order_id: "{{ order.id }}"
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                window.location.href = data.redirect_url;
+            }
+        });
+        return;
+    }
+
+    // ✅ ONLINE PAYMENT FLOW
+    const options = {
+        key: "{{ razorpay_key }}",
+        amount: "{{ amount }}",
+        currency: "INR",
+        order_id: "{{ order.razorpay_order_id }}",
+
+        handler: function (response) {
+            fetch("{% url 'verify_payment' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    window.location.href = data.redirect_url;
+                }
+            });
+        }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+};
+</script>
+
+{% endblock %}

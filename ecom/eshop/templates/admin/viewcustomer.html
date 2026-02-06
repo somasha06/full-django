@@ -1,0 +1,87 @@
+{% extends 'admin/adminbase.html' %}
+{% block content %}
+
+<div class="space-y-6 animate-fade-in-up">
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Customer Database</h2>
+            <p class="text-slate-500 text-sm mt-1">View and manage registered customers.</p>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center w-16">ID</th>
+                        <th class="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Customer</th>
+                        <th class="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Email</th>
+                        <th class="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Orders</th>
+                        <th class="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Total Spend</th>
+                        <th class="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Last Order</th>
+                        <th class="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Status</th>
+                        <th class="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for customer in customers %}
+                    <tr class="hover:bg-slate-50/80 transition-colors group">
+                        <td class="py-4 px-6 text-sm font-mono text-slate-600 text-center">{{ forloop.counter }}</td>
+                        <td class="py-4 px-6">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-bold">
+                                    {{ customer.user.username|slice:":1"|upper }}
+                                </div>
+                                <span class="text-sm font-medium text-slate-800">{{ customer.user.username }}</span>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6 text-sm text-slate-600">{{ customer.user.email }}</td>
+                        <td class="py-4 px-6 text-sm font-mono text-slate-600 text-center">{{ customer.total_orders}}</td>
+                        <td class="py-4 px-6 text-sm font-mono text-slate-600 text-center">{{ customer.total_spent|default:"0"}}</td>
+                        <td>{{ customer.last_order|default:"—" }}</td>
+                        <td>
+                            {% if customer.active %}
+                                <span class="text-green-600">Active</span>
+                            {% else %}
+                                <span class="text-red-600">Blocked</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <a href="{% url 'viewcustomerprofile' customer.user.id %}"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold tracking-wide uppercase text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all">
+                                Profile
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="py-12 text-center text-slate-500">No customers found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out;
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,222 @@
+{% extends "customer/customerbase.html" %}
+
+{% block content %}
+
+<!-- Breadcrumbs -->
+<nav class="bg-slate-50 border-b border-slate-200 py-3">
+    <div class="container mx-auto px-4 lg:px-8">
+        <div class="flex items-center gap-2 text-sm text-slate-500">
+            <a href="/" class="hover:text-orange-600">Home</a>
+            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            <span class="text-slate-900 font-medium">{{product.name}}</span>
+        </div>
+    </div>
+</nav>
+
+<section class="py-12 lg:py-20">
+    <div class="container mx-auto px-4 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+            <!-- Product Image -->
+            <div class="space-y-6">
+                <div
+                    class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden aspect-square flex items-center justify-center p-8 relative group">
+                    {% if images %}
+        <!-- Slides -->
+        <div id="slider" class="w-full h-full relative">
+            {% for img in images %}
+                <img src="{{ img.productimages.url }}"
+                     class="slide absolute inset-0 w-full h-full object-contain opacity-0 transition-opacity duration-500"
+                     {% if forloop.first %}style="opacity:1"{% endif %}>
+            {% endfor %}
+        </div>
+
+        <!-- Left Arrow -->
+        <button onclick="prevSlide()"
+                class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow">
+            ‹
+        </button>
+
+        <!-- Right Arrow -->
+        <button onclick="nextSlide()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow">
+            ›
+        </button>
+
+    {% else %}
+        <div class="flex items-center justify-center h-full">
+            <i class="fa-regular fa-image text-6xl text-slate-200"></i>
+        </div>
+    {% endif %}
+
+    <span
+        class="absolute top-6 left-6 bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+        {{ product.subcategory|default:"Authentic" }}
+    </span>
+                </div>
+            </div>
+
+            
+
+            <!-- Product Details -->
+            <div class="flex flex-col justify-center">
+                <div class="mb-2 flex items-center gap-2">
+                    <div class="inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-pink-50 text-pink-600 text-xs font-semibold">
+                        <i class="fa-solid fa-heart"></i>
+                        Made with love by {{ profile.owner_name }}
+                    </div>  
+                </div>
+                
+
+                <h1 class="text-3xl md:text-5xl font-bold text-slate-900 font-heading leading-tight mb-4">
+                    {{product.name}}</h1>
+
+                <div class="flex items-center gap-4 mb-8">
+                    <p class="mt-2 font-semibold">
+    ⭐ ⭐⭐⭐⭐ {{ product.average_rating }} / 5
+    <span class="text-gray-500">
+        ({{ product.total_reviews }} reviews)
+    </span>
+</p>
+                </div>
+
+                <div class="mb-8">
+                    <div class="flex items-baseline gap-4">
+                        <span class="text-4xl font-bold text-gray-900">
+                            ₹<span id="price">{{ default_variant.price }}</span>
+                        </span>
+
+                        {% comment %} {% if default_variant.discount_price %} {% endcomment %}
+                        <span class="text-xl text-slate-400 line-through">
+                            ₹<span id="discount">{{ default_variant.discount_price }}</span>
+                        </span>
+                        {% comment %} {% endif %} {% endcomment %}
+                    </div>
+                    <p class="text-sm text-slate-500 mt-2">Inclusive of all taxes</p>
+                </div>
+
+                <div class="prose prose-slate hover:prose-a:text-orange-600 mb-10 text-slate-600 leading-relaxed">
+                    <h3 class="text-lg font-bold text-slate-900 mb-2 font-heading">Description</h3>
+                    <p>{{product.description}}</p>
+                </div>
+
+                <p class="text-xs text-gray-500 mt-4">
+                    Manufactured and packed by {{ profile.store_name }},
+                    {{ profile.address }}.
+                </p>
+
+                <div class="mb-8">
+                    <h3 class="text-sm font-bold text-slate-900 mb-3 uppercase tracking-wide">
+                        Select Weight
+                    </h3>
+
+                    <div class="flex gap-3 flex-wrap">
+                        {% for variant in productvariants %}
+                        <button
+                            type="button"
+                            class="variant-btn border border-slate-300 px-4 py-2 rounded-xl text-sm font-semibold hover:border-slate-900 transition"
+                            data-id="{{ variant.id }}"
+                            data-price="{{ variant.price }}"
+                            data-discount="{{ variant.discount_price|default:'' }}"
+                            {% if forloop.first %} data-active="true" {% endif %}
+                        >
+                            {{ variant.weight }}
+                        </button>
+                        {% endfor %}
+                    </div>
+
+                    <p class="text-sm text-gray-500 mt-1">
+                        Handmade by <span class="font-semibold">{{ profile.owner_name }}</span>
+                    </p>
+                </div>
+
+
+
+                <div class="flex flex-col sm:flex-row gap-4 pt-8 border-t border-slate-100">
+                    <div class="flex flex-1 gap-2">
+<button
+    onclick="addToWishlist()"
+    class="border text-amber-800 border-red-500 hover:bg-red-500 hover:text-white
+           gap-2 px-3 py-2 rounded-full flex items-center">
+    <i class="fa-solid fa-heart"></i> Wishlist
+</button>
+
+              
+                        <button
+                            onclick="addToCart()"
+                            class="w-full bg-slate-900 text-white font-bold rounded-xl px-8 py-3
+                                hover:bg-slate-800 transition-all">
+                            Add to Cart
+                        </button>
+
+                    </div>
+                    <button
+                        class="flex-1 bg-orange-500 text-white font-bold rounded-xl px-8 py-3 hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/30 active:scale-95 transition-all">
+                        Buy Now
+                    </button>
+                </div>
+
+                <div
+                    class="mt-8 flex items-center justify-center gap-6 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-emerald-500 text-lg"></i> Secure Payment
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-truck-fast text-blue-500 text-lg"></i> Fast Delivery
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<script>
+let selectedVariant = "{{ default_variant.id }}";
+
+const buttons = document.querySelectorAll(".variant-btn");
+const priceEl = document.getElementById("price");
+const discountEl = document.getElementById("discount");
+
+buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        buttons.forEach(b => {
+            b.classList.remove("border-slate-900", "bg-slate-900", "text-white");
+        });
+
+        btn.classList.add("border-slate-900", "bg-slate-900", "text-white");
+
+        priceEl.innerText = btn.dataset.price;
+        if (discountEl) {
+            discountEl.innerText = btn.dataset.discount || "";
+        }
+
+        selectedVariant = btn.dataset.id;
+    });
+});
+
+function addToWishlist() {
+    if (!selectedVariant) {
+        alert("Please select a weight first");
+        return;
+    }
+
+    // ✅ ROOT-level wishlist URL + trailing slash
+    window.location.href = `/wishlist/add/${selectedVariant}/`;
+}
+
+function addToCart() {
+    if (!selectedVariant) {
+        alert("Please select a weight first");
+        return;
+    }
+
+    // redirect to Django view
+    window.location.href = `/addtocart/${selectedVariant}`;
+}
+</script>
+
+
+
+
+{% endblock %}
